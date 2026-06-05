@@ -1,0 +1,254 @@
+#Function that executes on every line in the log, to build the dictionary object for that line, to return the valid_lines dictionary object
+def read_log(line):
+    #strip white space, basically remove all extra spaces in the line
+    #if the line become empty, return None
+    log_line = line.strip()
+    if not log_line:
+        return None
+
+    #extract Timestamp, the first 19 characters
+    #extract the rest of the line
+    timestamp = log_line[:19]
+
+    #split the rest of the line
+    rest = log_line[21:].split()
+
+    #defensive check to make sure line has at least two words
+    if len(rest) < 2:
+        return None
+    #extract the first word after the comma --> severity, assign to a variable
+    severity = rest[0]
+
+    #extract system, second word after the comma
+    #assign system to a variable
+    system = rest[1]
+
+    #everything after system --> extract as the message, assign to a variable
+    message = " ".join(rest[2:])
+
+    #Build the dictionary for this line
+    log_line_dict = {
+        "timestamp": timestamp , 
+        "severity": severity , 
+        "system": system , 
+        "message": message
+    }
+    #return the dictionary
+    return log_line_dict
+
+#Function that will read the file, build the list to return the lists to the main loop
+def load_file():
+    valid_lines = []
+    malformed_lines = []
+    #ask user for file path
+    while True:
+        try:
+            print("Enter the full file path of the log file you would like to read.")
+            log_path = input("Enter Here: ")
+            print()
+            #try to open the file
+            with open(log_path) as file:
+                #loop through each line
+                for line_number , line in enumerate(file, start= 1):
+                    #call read_log()
+                    result = read_log(line)
+                    #why does this if not section work again?
+                    if not result:
+                        malformed_lines.append({
+                            "line_number": line_number , 
+                            "raw": line
+                        })
+                    #otherwise append the result to the valid_lines list object
+                    else:
+                        valid_lines.append(result)
+            #return both lists to the main loop
+            return valid_lines, malformed_lines
+        except FileNotFoundError:
+            print("Sorry, that is not a valid file path.")
+            continue
+    
+#Function that will search the finished list of log dictionary objects, make a new list of the matching dictionary objects, and return the matching results to the submenu function
+def search_logs(criteria, value):
+    #make a list named matches
+    matches = []
+
+    #loop through each item in valid_lines
+        #If criteria is system:
+            #check if system matches the value
+
+        #if criteria is keyword:
+            #check if keyword matches the value
+
+        #if criteria is timestamp:
+            #check if timestamp matches the value
+    return matches
+
+#2 lists
+valid_lines , malformed_lines = load_file()
+#CLI Menu
+while True: 
+
+    print("Welcome to the LogReader Application")
+    print("Choose the log action below:")
+    print("1. Display an amount of valid log lines")
+    print("2. Display an amount of malformed log lines")
+    print("3. Search logs (System, keyword, timestamp)")
+    print("4. Count severity levels")
+    print("5. Quit")
+    print()
+    
+    #input validation loop
+    while True:
+        try:
+            log_action = int(input("Enter action here: "))
+            if 1 <= log_action <= 5:
+                break
+            else: 
+                print("Numbers only please")
+                continue
+        except:
+            print("numbers 1-5 please")
+    
+    print()
+
+#Display user choice of logs
+    if log_action == 1:
+        #Check if valid_lines is empty:
+        if not valid_lines:
+            print("No valid lines to display.")
+            print()
+            pass
+
+        #ask user for the amount of logs to display
+        #validation loop
+            #check for numbers
+            #check for length, can't be less than 0 or more than the list length
+        while True:
+            try:
+                #let user know how many logs are in the list
+                print(f"There are {len(valid_lines)} total log(s)")
+                logs_displayed = int(input("How many valid logs would you like to display?: "))
+                if 1 <= logs_displayed <= len(valid_lines):
+                    break
+                else:
+                    print("Sorry that is not a valid number")
+                    print()
+            except: 
+                print("Sorry that is not a valid number")
+                print()
+                continue
+
+        #after confirming working input, loop through list n amount of times
+        #print example
+
+        for entry_number , item in enumerate(valid_lines[:logs_displayed], start= 1):
+            print()
+            print(f"Entry {entry_number}:")
+            print(f"Timestamp: {item['timestamp']}")
+            print(f"Severity: {item['severity']}")
+            print(f"System: {item['system']}")
+            print(f"Message: {item['message']}")
+            print()
+
+#Display user choice of malformed logs
+    elif log_action == 2:
+        #check if malformed_lines is empty
+        if not malformed_lines:
+            print("No malformed lines to display.")
+            print()
+            pass
+
+
+        #ask user for the amount of logs to display
+        #validation loop
+            #check for numbers
+            #check for length, can't be less than 0 or more than the list length
+        while True:
+            try:
+                #Let user know how many logs are in the list
+                print(f"There are {len(malformed_lines)} total log(s)")
+                logs_displayed = int(input("How many malformed logs would you like to display?: "))
+                if 1 <= logs_displayed <= len(malformed_lines):
+                    break
+                else:
+                    print("Sorry that is not a valid number")
+                    print()
+            except: 
+                print("Sorry that is not a valid number")
+                print()
+                continue
+
+        #after confirming working input, loop through list n amount of times
+        #print example
+
+        for entry_number , item in enumerate(malformed_lines[:logs_displayed], start= 1):
+            print()
+            print(f"Malformed Entry {entry_number}:")
+            print(f"Line Number in original file: {item['line_number']}")
+            print(f"Raw Line Data: {item['raw']}")
+            print()
+
+#Search logs sub menu:
+    elif log_action == 3:
+        while True:
+            try:
+                print("1. System")
+                print("2. Keyword")
+                print("3. Timestamp")
+                print("4. Return to Main Menu")
+                submenu_action = int(input("Enter Choice Here: "))
+                if 1 <= submenu_action <= 4:
+                    break
+                else:
+                    print("Sorry, enter a number between 1-3")
+            except:
+                print("Sorry, enter a number between 1-3")
+                continue
+
+        if submenu_action == 1:
+            #validation loop check
+                #ask user for system name and call search_logs function
+            #print to show user how many matches, ask user how many they want to see and print for them.
+            pass
+        elif submenu_action == 2:
+            #validation loop check
+                #ask user for keyword and call search_logs function
+            #print to show user how many matches, ask user how many they want to see and print for them.
+            pass
+        elif submenu_action == 3:
+            #validation loop check
+                #ask user for timestamp, and give user format. call search_logs function
+            #print to show user how many matches, ask user how many they want to see and print for them.
+            pass
+        pass
+
+        #sub menu loop, maybe a seperate function
+
+#Count severity levels?
+    elif log_action == 4:
+        info_count = 0
+        warning_count = 0
+        error_count = 0
+        unknown_count = 0
+        for item in valid_lines:
+            if item["severity"].lower() == "info":
+                info_count += 1
+            elif item["severity"].lower() == "warning":
+                warning_count += 1
+            elif item["severity"].lower() == "error":
+                error_count += 1
+            else:
+                unknown_count += 1
+        
+        print("Severity Statics")
+        print(f"Info logs: {info_count}")
+        print(f"Warning logs: {warning_count}")
+        print(f"Error logs: {error_count}")
+        print(f"Unknown Logs: {unknown_count}")
+        print()
+
+
+#Quit
+    else:
+        print("Thank you for using the LogReader Application!")
+        break
