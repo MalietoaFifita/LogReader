@@ -73,14 +73,24 @@ def search_logs(criteria, value):
     matches = []
 
     #loop through each item in valid_lines
+    for item in valid_lines:
         #If criteria is system:
+        if criteria == "system":
             #check if system matches the value
+            if item["system"].lower() == value.lower():
+                matches.append(item)
 
         #if criteria is keyword:
+        elif criteria == "keyword":
             #check if keyword matches the value
+            if value.lower() in item["message"]:
+                matches.append(item)
 
         #if criteria is timestamp:
+        elif criteria == "timestamp":
             #check if timestamp matches the value
+            if item["timestamp"] == value:
+                matches.append(item)
     return matches
 
 #2 lists
@@ -197,22 +207,44 @@ while True:
                 print("3. Timestamp")
                 print("4. Return to Main Menu")
                 submenu_action = int(input("Enter Choice Here: "))
+                print()
                 if 1 <= submenu_action <= 4:
                     break
                 else:
-                    print("Sorry, enter a number between 1-3")
+                    print("Sorry, enter a number between 1-4")
+                    print()
             except:
-                print("Sorry, enter a number between 1-3")
+                print("Sorry, enter a number between 1-4")
+                print()
                 continue
 
         if submenu_action == 1:
             #validation loop check
-                #ask user for system name and call search_logs function
+            while True:
+                try:
+                    #ask user for system name and call search_logs function
+                    system_name = input("Enter the system name you would like to search for:")
+                    results = search_logs("system", system_name)
+                    break
+                except:
+                    print("Sorry, there was an error searching for the system name.")
+                    print()
+                    continue
             #print to show user how many matches, ask user how many they want to see and print for them.
-            pass
+            print(f"There are {len(results)} total entries matching that system name.")
+            results_displayed = int(input(("How many entries would you like to display?")))
+            for item in results[:results_displayed]:
+                print()
+                print(f"Timestamp: {item['timestamp']}")
+                print(f"Severity: {item['severity']}")
+                print(f"System: {item['system']}")
+                print(f"Message: {item['message']}")
+                print()
+
         elif submenu_action == 2:
             #validation loop check
                 #ask user for keyword and call search_logs function
+                    
             #print to show user how many matches, ask user how many they want to see and print for them.
             pass
         elif submenu_action == 3:
