@@ -83,7 +83,7 @@ def search_logs(criteria, value):
         #if criteria is keyword:
         elif criteria == "keyword":
             #check if keyword matches the value
-            if value.lower() in item["message"]:
+            if value.lower() in item["message"].lower():
                 matches.append(item)
 
         #if criteria is timestamp:
@@ -232,9 +232,24 @@ while True:
                     continue
             #print to show user how many matches, ask user how many they want to see and print for them.
             print(f"There are {len(results)} total entries matching that system name.")
-            results_displayed = int(input(("How many entries would you like to display?")))
-            for item in results[:results_displayed]:
+
+            #validation loop for user input
+            while True:
+                try:
+                    results_displayed = int(input("How many entries would you like to display?"))
+                    if 1 <= results_displayed <= len(results):
+                        break
+                    else:
+                        print("Sorry that is not a valid number")
+                        continue
+                except:
+                    print("Sorry, that is not a valid number")
+                    continue
+
+
+            for result_number, item in enumerate(results[:results_displayed], start= 1):
                 print()
+                print(f"Entry {result_number}:")
                 print(f"Timestamp: {item['timestamp']}")
                 print(f"Severity: {item['severity']}")
                 print(f"System: {item['system']}")
@@ -243,10 +258,39 @@ while True:
 
         elif submenu_action == 2:
             #validation loop check
-                #ask user for keyword and call search_logs function
-                    
+            while True:
+                try:
+                    #ask user for keyword and call search_logs function
+                    keyword = input("What keyword would you like to search for?: ")
+                    results = search_logs("keyword", keyword)
+                    break
+                except:
+                    print("Sorry, there was an error with the search")
+
             #print to show user how many matches, ask user how many they want to see and print for them.
-            pass
+            print(f"There are {len(results)} total entries matching that keyword.")
+            #validation loop, for user input
+            while True:
+                try:
+                    results_displayed = int(input("How many would you like to display?: "))
+                    if 1 <= results_displayed <= len(results):
+                        break
+                    else:
+                        print("Sorry not a valid number")
+                        continue
+                except:
+                    print("Sorry not a valid number")
+                    continue
+
+            for result_number, item in enumerate(results[:results_displayed], start= 1):
+                print()
+                print(f"Entry {result_number}:")
+                print(f"Timestamp: {item['timestamp']}")
+                print(f"Severity: {item['severity']}")
+                print(f"System: {item['system']}")
+                print(f"Message: {item['message']}")
+                print()
+
         elif submenu_action == 3:
             #validation loop check
                 #ask user for timestamp, and give user format. call search_logs function
