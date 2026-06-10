@@ -89,7 +89,7 @@ def search_logs(criteria, value):
         #if criteria is timestamp:
         elif criteria == "timestamp":
             #check if timestamp matches the value
-            if item["timestamp"] == value:
+            if item["timestamp"].startswith(value):
                 matches.append(item)
     return matches
 
@@ -206,6 +206,7 @@ while True:
                 print("2. Keyword")
                 print("3. Timestamp")
                 print("4. Return to Main Menu")
+                print()
                 submenu_action = int(input("Enter Choice Here: "))
                 print()
                 if 1 <= submenu_action <= 4:
@@ -230,6 +231,13 @@ while True:
                     print("Sorry, there was an error searching for the system name.")
                     print()
                     continue
+
+            #check if nothing was returned, if nothing is returned. Go back to CLI menu
+            if len(results) == 0:
+                print("Sorry, there are no results containing that system")
+                print()
+                continue
+
             #print to show user how many matches, ask user how many they want to see and print for them.
             print(f"There are {len(results)} total entries matching that system name.")
 
@@ -267,6 +275,12 @@ while True:
                 except:
                     print("Sorry, there was an error with the search")
 
+            #check if nothing was returned, if nothing is returned. Go back to CLI menu
+            if len(results) == 0:
+                print("Sorry, there are no results containing that keyword")
+                print()
+                continue
+
             #print to show user how many matches, ask user how many they want to see and print for them.
             print(f"There are {len(results)} total entries matching that keyword.")
             #validation loop, for user input
@@ -293,12 +307,47 @@ while True:
 
         elif submenu_action == 3:
             #validation loop check
-                #ask user for timestamp, and give user format. call search_logs function
-            #print to show user how many matches, ask user how many they want to see and print for them.
-            pass
-        pass
+            while True:
+                try:
+                    #ask user for timestamp, and give user format. call search_logs function
+                    print("Enter the timestamp as either YYYY-MM-DD or YYYY-MM-DD HH:MM:SS")
+                    timestamp_input = input("Enter the timestamp here: ")
+                    print()
+                    results = search_logs("timestamp", timestamp_input)
+                    break
+                except:
+                    print("Sorry, there was an error with your search")
 
-        #sub menu loop, maybe a seperate function
+            #check if nothing was returned, if nothing is returned. Go back to sub-menu
+            if len(results) == 0:
+                print("Sorry, there are no results containing that timestamp")
+                print()
+                continue
+
+            #print to show user how many matches
+            print(f"There are {len(results)} total entries matching that timestamp.")
+            #ask user how many they want to see and print for them.
+            #validation loop for user input
+            while True:
+                try:
+                    results_displayed = int(input("How many entries would you like to display?: "))
+                    if 1 <= results_displayed <= len(results):
+                        break
+                    else:
+                        print("Sorry that is not a valid number")
+                        continue
+                except:
+                    print("Sorry that is not a valid number")
+                    continue
+            
+            for entry_number, item in enumerate(results[:results_displayed], start= 1):
+                print()
+                print(f"Entry {entry_number}:")
+                print(f"Timestamp: {item['timestamp']}")
+                print(f"Severity: {item['severity']}")
+                print(f"System: {item['system']}")
+                print(f"Message: {item['message']}")
+                print()
 
 #Count severity levels?
     elif log_action == 4:
