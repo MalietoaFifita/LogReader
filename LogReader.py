@@ -93,6 +93,16 @@ def search_logs(criteria, value):
                 matches.append(item)
     return matches
 
+#function to display results
+def display_entry(item, number):
+    print()
+    print(f"Entry {number}")
+    print(f"Timestamp: {item['timestamp']}")
+    print(f"Severity: {item['severity']}")
+    print(f"System: {item['system']}")
+    print(f"Message: {item['message']}")
+    print()
+
 #2 lists
 valid_lines , malformed_lines = load_file()
 #CLI Menu
@@ -152,13 +162,7 @@ while True:
         #print example
 
         for entry_number , item in enumerate(valid_lines[:logs_displayed], start= 1):
-            print()
-            print(f"Entry {entry_number}:")
-            print(f"Timestamp: {item['timestamp']}")
-            print(f"Severity: {item['severity']}")
-            print(f"System: {item['system']}")
-            print(f"Message: {item['message']}")
-            print()
+            display_entry(item, entry_number)
 
 #Display user choice of malformed logs
     elif log_action == 2:
@@ -197,7 +201,6 @@ while True:
             print(f"Line Number in original file: {item['line_number']}")
             print(f"Raw Line Data: {item['raw']}")
             print()
-
 #Search logs sub menu:
     elif log_action == 3:
         while True:
@@ -256,13 +259,7 @@ while True:
 
 
             for result_number, item in enumerate(results[:results_displayed], start= 1):
-                print()
-                print(f"Entry {result_number}:")
-                print(f"Timestamp: {item['timestamp']}")
-                print(f"Severity: {item['severity']}")
-                print(f"System: {item['system']}")
-                print(f"Message: {item['message']}")
-                print()
+                display_entry(item, entry_number)
 
         elif submenu_action == 2:
             #validation loop check
@@ -297,13 +294,7 @@ while True:
                     continue
 
             for result_number, item in enumerate(results[:results_displayed], start= 1):
-                print()
-                print(f"Entry {result_number}:")
-                print(f"Timestamp: {item['timestamp']}")
-                print(f"Severity: {item['severity']}")
-                print(f"System: {item['system']}")
-                print(f"Message: {item['message']}")
-                print()
+                display_entry(item, entry_number)
 
         elif submenu_action == 3:
             #validation loop check
@@ -341,13 +332,7 @@ while True:
                     continue
             
             for entry_number, item in enumerate(results[:results_displayed], start= 1):
-                print()
-                print(f"Entry {entry_number}:")
-                print(f"Timestamp: {item['timestamp']}")
-                print(f"Severity: {item['severity']}")
-                print(f"System: {item['system']}")
-                print(f"Message: {item['message']}")
-                print()
+                display_entry(item, entry_number)
 
 #Count severity levels?
     elif log_action == 4:
